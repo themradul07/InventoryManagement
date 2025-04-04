@@ -15,7 +15,7 @@
 
 import mongoose from "mongoose";
 
-const MONGODB_URI = "mongodb://127.0.0.1:27017/Inventory";
+const MONGODB_URI = process.env.MONGO_URI
 
 if (!MONGODB_URI) {
     throw new Error("Please define the MONGO_URI environment variable");
