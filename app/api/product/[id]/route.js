@@ -1,7 +1,9 @@
 
+
 import { connectDB } from "@/config/mongoose-connection";
 import Product from "@/models/equipment-model"
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose"
+const { ObjectId } = mongoose.Types;
 
 
 export async function POST(req){
@@ -26,31 +28,39 @@ export async function POST(req){
     
 }
 
-export async function GET(req, param ){
+// import { connectDB } from "@/config/mongoose-connection";
+// import Product from "@/models/equipment-model";
+
+export async function GET(req, { params }) {
     await connectDB();
-    const { params } = await param; 
     const id = params.id;
-    
-    
-    try{
-        // console.log(id)
-        let newProduct = await Product.findOne({_id:new ObjectId(id)}); 
 
-        console.log(newProduct);
-        // console.log("executed");
+    try {
+        const newProduct = await Product.findOne({ _id: new ObjectId(id) });
 
-       
-    return new Response(
-        JSON.stringify({ failure: false, msg: "Product Added Successfully",body : newProduct }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-    }catch{
-        
         return new Response(
-            JSON.stringify({ failure: true, msg: "Product Added Unsuccessfully" }),
-            { status: 400, headers: { "Content-Type": "application/json" } }
+            JSON.stringify({
+                failure: false,
+                msg: "Product fetched successfully",
+                body: newProduct,
+            }),
+            {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            }
         );
+    } catch (error) {
+        console.error("Error fetching product:", error);
 
-    }    
-    
+        return new Response(
+            JSON.stringify({
+                failure: true,
+                msg: "Failed to fetch product",
+            }),
+            {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+    }
 }
